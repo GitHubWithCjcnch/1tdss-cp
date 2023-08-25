@@ -1,3 +1,4 @@
+from csv import *
 users = {}
 
 while True:
@@ -7,8 +8,7 @@ while True:
     print("3. List all users")
     print("4. Search user by email")
     print("5. Exit")
-    
-    choice = "5"
+    choice = input("Select a choice above:")
 
     if choice == "1":
         name = input("Enter name: ")
@@ -18,11 +18,16 @@ while True:
             print("User with this email already exists.")
         else:
             users[email] = name
+            try:
+                with open("data.csv", 'w') as file:
+                    file.write("Email,Name\n")
+            except FileExistsError:
+                pass    
+            save_users_to_csv("data.csv", users)
             print(f"{name} added successfully!")
 
     elif choice == "2":
         email = input("Enter email to remove: ")
-        
         if email in users:
             del users[email]
             print(f"User with email {email} removed successfully!")
@@ -30,6 +35,7 @@ while True:
             print("User not found.")
 
     elif choice == "3":
+        users = load_users_from_csv("data.csv")
         if not users:
             print("No users in the list.")
         else:
@@ -38,7 +44,6 @@ while True:
 
     elif choice == "4":
         email = input("Enter email to search: ")
-        
         if email in users:
             print(f"Name: {users[email]}, Email: {email}")
         else:
